@@ -6,5 +6,7 @@ build
 build-ssr
 *.local
 
+.env
+
 # config 
 pakage-lock.json
