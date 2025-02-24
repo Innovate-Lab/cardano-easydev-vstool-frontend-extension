@@ -6,7 +6,7 @@ interface MainContainerProps {
 
 export const MainContainer = ({ children }: MainContainerProps) => {
     return (
-        <div className="main-container relative overflow-hidden mx-auto my-0 w-full max-w-[720px] min-h-screen px-4">
+        <div className="main-container relative overflow-hidden mx-auto my-0 w-full max-w-[720px] px-4">
             {children}
         </div>
     )
