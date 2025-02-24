@@ -1,6 +1,6 @@
 {
-  "name": "cardano-easydev-vscode",
-  "displayName": "cardano-easydev",
+  "name": "cardano-easydev-vstool",
+  "displayName": "EasyDev",
   "icon": "media/icon.png",
   "publisher": "",
   "description": "",
@@ -37,11 +37,6 @@
     },
     "commands": [
       {
-        "command": "cardano-easydev-vscode.helloWorld",
-        "category": "cardano-easydev-vscode",
-        "title": "Hello World"
-      },
-      {
         "command": "cardano-easydev-vscode.webView",
         "category": "cardano-easydev-vscode",
         "title": "Webview"
@@ -49,7 +44,7 @@
     ]
   },
   "scripts": {
-    "install:all": "npm install && cd webview-ui && npm install",
+    "install:all": "pnpm install && cd webview-ui && pnpm install",
     "start:webview": "cd webview-ui && npm run start",
     "build:webview": "cd webview-ui && npm run build",
     "vscode:prepublish": "npm run compile",
