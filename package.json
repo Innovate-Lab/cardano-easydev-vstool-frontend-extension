@@ -1,6 +1,6 @@
 {
-  "name": "cardano-easydev-vscode",
-  "displayName": "cardano-easydev",
+  "name": "cardano-easydev-vstool",
+  "displayName": "EasyDev",
   "icon": "media/icon.png",
   "publisher": "",
   "description": "",
@@ -36,11 +36,6 @@
       ]
     },
     "commands": [
-      {
-        "command": "cardano-easydev-vscode.helloWorld",
-        "category": "cardano-easydev-vscode",
-        "title": "Hello World"
-      },
       {
         "command": "cardano-easydev-vscode.webView",
         "category": "cardano-easydev-vscode",
