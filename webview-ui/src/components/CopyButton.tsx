@@ -1,16 +1,24 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { copyToClipboard } from '../utils';
 
-export const CopyButton = () => {
+interface ICopyButtonProps {
+    text: string;
+}
+
+export const CopyButton = ({ text }: ICopyButtonProps) => {
     return (
         <motion.button
             className="w-[32px] h-[32px] cursor-pointer shrink-0"
-            title="Copy private key"
+            title="Copy"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2 }}
+            onClick={() => {
+                copyToClipboard(text);
+            }}
         >
             <motion.div
                 className="w-full h-full bg-[rgba(92,92,92,0.27)] rounded-full flex items-center justify-center border border-[rgba(255,255,255,0.21)] hover:bg-[rgba(92,92,92,0.4)] transition-colors"
