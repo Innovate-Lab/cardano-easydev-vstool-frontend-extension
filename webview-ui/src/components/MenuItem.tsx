@@ -5,9 +5,9 @@ interface MenuItemProps {
     width?: string;
 }
 
-export const MenuItem = ({ icon, title }: MenuItemProps) => {
+export const MenuItem = ({ icon, title, onClick }: MenuItemProps) => {
     return (
-        <div className="flex h-auto min-h-[60px] md:min-h-[80px] p-4 md:p-6 justify-between items-center self-stretch w-full bg-[rgba(255,255,255,0.1)] rounded-lg md:rounded-[24px] relative z-[14] cursor-pointer hover:opacity-80 hover:scale-[1.02] hover:bg-[rgba(255,255,255,0.15)] transition-all duration-300 ease-in-out">
+        <div className="flex h-auto min-h-[60px] md:min-h-[80px] p-4 md:p-6 justify-between items-center self-stretch w-full bg-[rgba(255,255,255,0.1)] rounded-lg md:rounded-[24px] relative z-[14] cursor-pointer hover:opacity-80 hover:scale-[1.02] hover:bg-[rgba(255,255,255,0.15)] transition-all duration-300 ease-in-out" onClick={onClick}>
             <div className="flex gap-2 md:gap-[8px] items-center relative z-[15]">
                 {icon}
                 <span className="font-['PP_Mori'] text-lg md:text-[24px] font-normal leading-tight text-white relative text-left whitespace-nowrap z-[17]">
