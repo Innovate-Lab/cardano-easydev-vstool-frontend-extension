@@ -1,10 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import { Background } from "./components/Background";
+import { Logo } from "./components/Logo";
 
 export const RootLayout = () => {
   return (
-    <div className="relative bg-[#0e0f0e] flex flex-col justify-between w-full min-h-screen">
+    <Background>
+      <Logo />
       <Outlet />
-    </div>
+    </Background>
   );
 };
