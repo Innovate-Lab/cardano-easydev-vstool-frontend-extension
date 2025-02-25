@@ -6,28 +6,32 @@ import { motion } from 'framer-motion'
 import { Back } from '../components/Back'
 import { GenerateWallet } from '../components/GenerateWallet'
 import { axiosInstance } from '../api/axios'
-
+import { NotifyCard } from '../components/NotifyCard'
+import { IGeneratePrivateKeyResponse, IGenerateSeedPhraseResponse } from '../types/api'
 
 export const UserWallet = () => {
     const navigate = useNavigate();
+    const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const [privateKey, setPrivateKey] = useState<string>("");
     const [seedPhrase, setSeedPhrase] = useState<string>("");
 
     const handleGeneratePrivateKey = async () => {
-        const resp = await axiosInstance.post("/wallet/private-key")
+        const resp = await axiosInstance.post<IGeneratePrivateKeyResponse>("/wallet/private-key")
 
         const json = resp.data
 
         setPrivateKey(json.data.privateKey)
+        setIsSuccess(json.code === 201)
     }
 
 
     const handleGenerateSeedPhrase = async () => {
-        const resp = await axiosInstance.post("/wallet/seed-phrase")
+        const resp = await axiosInstance.post<IGenerateSeedPhraseResponse>("/wallet/seed-phrase")
 
         const json = resp.data
 
         setSeedPhrase(json.data.seedPhrase)
+        setIsSuccess(json.code === 201)
     }
 
     return (
@@ -40,6 +44,14 @@ export const UserWallet = () => {
                 <GlassCard>
                     <Back title="Wallet" onClick={() => navigate("/")} />
                     <GenerateWallet handleGeneratePrivateKey={handleGeneratePrivateKey} handleGenerateSeedPhrase={handleGenerateSeedPhrase} privateKey={privateKey} seedPhrase={seedPhrase} />
+                    {isSuccess && (
+                        <NotifyCard
+                            type="success"
+                            title="Operation Successful"
+                            message="Your action has been completed successfully."
+                            onClose={() => { setIsSuccess(false) }}
+                        />
+                    )}
                 </GlassCard>
             </motion.div>
         </MainContainer>
