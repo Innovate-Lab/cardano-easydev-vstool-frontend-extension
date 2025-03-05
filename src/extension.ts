@@ -5,6 +5,7 @@ import { MessageHandlerData } from "@estruyf/vscode";
 import { WebviewProvider } from "./WebviewProvider";
 import { exec } from "child_process";
 import { promisify } from "util";
+import { generateFromTemplate } from "./template-generator";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -51,20 +52,35 @@ export function activate(context: vscode.ExtensionContext) {
 
 export const handleReceivedMessage = async (message: any, webView: any, context: any) => {
   const { command, requestId, payload } = message;
-  
 
   switch (command) {
-    case "GET_DATA_ERROR":
+    case 'SELECT_FOLDER':
+      const options: vscode.OpenDialogOptions = {
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false,
+        openLabel: 'Select Folder'
+      };
+
+      const folderUri = await vscode.window.showOpenDialog(options);
+
+      if (folderUri && folderUri[0]) {
+        webView.webview.postMessage({
+          command,
+          requestId, // The requestId is used to identify the response
+          payload: folderUri[0].fsPath
+        } as MessageHandlerData<string>);
+      }
+      break;
+
+    case 'CREATE_TEMPLATE':
+      const result = await generateFromTemplate(payload);
+
       webView.webview.postMessage({
         command,
         requestId, // The requestId is used to identify the response
-        error: `Oops, something went wrong!`,
-      } as MessageHandlerData<string>);
-      break;
-
-    case "POST_DATA":
-      vscode.window.showInformationMessage(`Received data from the webview: ${payload.data}`);
-      test(payload.data);
+        payload: result
+      } as MessageHandlerData<boolean>);
       break;
 
     default:
@@ -73,6 +89,6 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 };
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
 
 export const execNew = promisify(exec);

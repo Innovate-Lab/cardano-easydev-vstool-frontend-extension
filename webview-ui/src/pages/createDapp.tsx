@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+
 import { MainContainer } from '../components/MainContainer';
 import { GlassCard } from '../components/GlassCard';
 import { BackIcon } from '../components/icons/BackIcon';
@@ -6,15 +8,15 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { NotifyCard } from '../components/NotifyCard';
 import { SelectField } from '../components/SelectField';
+import { axiosInstance } from '../api/axios';
 
 interface ProjectMetadata {
     packageName: string;
+    projectPath: string;
 }
 
 const languageOptions = [
     { value: 'aiken', label: 'Aiken' },
-    { value: 'plutus', label: 'Plutus' },
-    { value: 'helios', label: 'Helios' },
 ];
 
 const sdkOptions = [
@@ -23,9 +25,11 @@ const sdkOptions = [
 
 export const CreateDapp = () => {
     const navigate = useNavigate();
+
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const [metadata, setMetadata] = useState<ProjectMetadata>({
-        packageName: 'com.example.demo'
+        packageName: '',
+        projectPath: ''
     });
 
     const [selectedSDK, setSelectedSDK] = useState('lucid');
@@ -40,10 +44,27 @@ export const CreateDapp = () => {
 
     const handleGenerate = async () => {
         try {
-            console.log('Generating with:', { metadata, selectedSDK, selectedLanguage });
-            setIsSuccess(true);
+            const resp = await axiosInstance.post("/dapp-template", { metadata, offChainSDK: selectedSDK, language: selectedLanguage });
+
+            const isSuccess = await messageHandler.request<boolean>("CREATE_TEMPLATE", { metadata, template: resp.data.data.data });
+
+            setIsSuccess(isSuccess);
         } catch (error) {
             console.error('Failed to generate template:', error);
+        }
+    };
+
+    const handleSelectFolder = async () => {
+        try {
+            const selectedPath = await messageHandler.request<string>("SELECT_FOLDER");
+            if (selectedPath) {
+                setMetadata(prev => ({
+                    ...prev,
+                    projectPath: selectedPath
+                }));
+            }
+        } catch (error) {
+            console.error('Failed to select folder:', error);
         }
     };
 
@@ -92,14 +113,35 @@ export const CreateDapp = () => {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-2">
                                     <label className="text-white text-base font-semibold">
-                                        PackageName
+                                        Project Location
+                                    </label>
+                                    <div className="flex flex-col sm:flex-row gap-2">
+                                        <input
+                                            type="text"
+                                            value={metadata.projectPath}
+                                            readOnly
+                                            className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
+                                            placeholder="Select project location"
+                                        />
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleSelectFolder}
+                                            className="w-full sm:w-auto h-[48px] px-4 bg-[#00A19B] rounded-[12px] text-white text-[16px] font-['PP_Mori'] border-none whitespace-nowrap"
+                                        >
+                                            Browse
+                                        </motion.button>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-white text-base font-semibold">
+                                        Package Name
                                     </label>
                                     <input
                                         type="text"
                                         value={metadata.packageName}
                                         onChange={handleInputChange('packageName')}
                                         className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
-                                        placeholder="com.example.demo"
                                     />
                                 </div>
                             </div>
