@@ -115,19 +115,19 @@ export const CreateDapp = () => {
                                     <label className="text-white text-base font-semibold">
                                         Project Location
                                     </label>
-                                    <div className="flex flex-col sm:flex-row gap-2">
+                                    <div className="flex gap-2">
                                         <input
                                             type="text"
                                             value={metadata.projectPath}
                                             readOnly
-                                            className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
+                                            className="flex-1 h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
                                             placeholder="Select project location"
                                         />
                                         <motion.button
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={handleSelectFolder}
-                                            className="w-full sm:w-auto h-[48px] px-4 bg-[#00A19B] rounded-[12px] text-white text-[16px] font-['PP_Mori'] border-none whitespace-nowrap"
+                                            className="h-[48px] px-6 bg-[#00A19B] rounded-[12px] text-white text-[16px] font-['PP_Mori'] border-none whitespace-nowrap"
                                         >
                                             Browse
                                         </motion.button>

@@ -6,6 +6,8 @@ import { WebviewProvider } from "./WebviewProvider";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { generateFromTemplate } from "./template-generator";
+import { EasyDevTerminal } from "./terminal";
+import { selectFolder } from "./utils";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -52,25 +54,27 @@ export function activate(context: vscode.ExtensionContext) {
 
 export const handleReceivedMessage = async (message: any, webView: any, context: any) => {
   const { command, requestId, payload } = message;
+  let easyDevTerminal = EasyDevTerminal.getInstance();
+  let selectedFolder: string | undefined;
 
   switch (command) {
     case 'SELECT_FOLDER':
-      const options: vscode.OpenDialogOptions = {
-        canSelectFiles: false,
-        canSelectFolders: true,
-        canSelectMany: false,
-        openLabel: 'Select Folder'
-      };
-
-      const folderUri = await vscode.window.showOpenDialog(options);
-
-      if (folderUri && folderUri[0]) {
+      selectedFolder = await selectFolder();
+      if (selectedFolder) {
         webView.webview.postMessage({
           command,
-          requestId, // The requestId is used to identify the response
-          payload: folderUri[0].fsPath
+          requestId,
+          payload: selectedFolder
         } as MessageHandlerData<string>);
       }
+      break;
+
+    case 'BUILD':
+      easyDevTerminal.build(payload);
+      break;
+
+    case 'TEST':
+      easyDevTerminal.test(payload);
       break;
 
     case 'CREATE_TEMPLATE':
