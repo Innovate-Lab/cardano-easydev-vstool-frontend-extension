@@ -8,6 +8,7 @@ import { Home } from "./pages/Home";
 import { UserWallet } from "./pages/UserWallet";
 import { Development } from "./pages/Development";
 import { CreateDapp } from "./pages/CreateDapp";
+import { Simulation } from "./pages/Simulation";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ if (root) {
             <Route path="/wallet" element={<UserWallet />} />
             <Route path="/development" element={<Development />} />
             <Route path="/create-dapp" element={<CreateDapp />} />
+            <Route path="/simulation" element={<Simulation />} />
           </Route>
         </Routes>
       </MemoryRouter>
