@@ -11,6 +11,7 @@ import { messageHandler } from '@estruyf/vscode/dist/client'
 export const Development = () => {
     const navigate = useNavigate();
     const [projectPath, setProjectPath] = useState<string>("");
+    const [blockchainProviderKey, setBlockchainProviderKey] = useState<string>("");
 
     const handleBuild = async () => {
         await messageHandler.request<string>("BUILD", projectPath);
@@ -61,7 +62,8 @@ export const Development = () => {
                         <div className="w-full relative">
                             <input
                                 type="text"
-                                value={""}
+                                value={blockchainProviderKey}
+                                onChange={(e) => setBlockchainProviderKey(e.target.value)}
                                 className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
                             />
                         </div>
