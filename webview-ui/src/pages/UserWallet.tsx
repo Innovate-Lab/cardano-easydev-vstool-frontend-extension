@@ -18,7 +18,7 @@ export const UserWallet = () => {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const [privateKey, setPrivateKey] = useState<string>("");
     const [seedPhrase, setSeedPhrase] = useState<string>("");
-    const [address, setAddress] = useState<string>("addr_test1qr7xvrx6zea988hz5juazw32qyfmh5jg6z9euursqs390pz62landnfc3ggslmdvaglwmuquuxt2pkkxctzp0adfrxasyzm9m9");
+    const [address, setAddress] = useState<string>("");
     const [nfts, setNfts] = useState<Array<NFT>>([]);
     const [utxos, setUtxos] = useState<Array<UTXO>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -117,7 +117,7 @@ export const UserWallet = () => {
             >
                 <GlassCard>
                     <Back title="Wallet" onClick={() => navigate("/")} />
-                    <GenerateWallet handleGeneratePrivateKey={handleGeneratePrivateKey} handleGenerateSeedPhrase={handleGenerateSeedPhrase} privateKey={privateKey} seedPhrase={seedPhrase} />
+                    <GenerateWallet handleGeneratePrivateKey={handleGeneratePrivateKey} handleGenerateSeedPhrase={handleGenerateSeedPhrase} privateKey={privateKey} seedPhrase={seedPhrase} setPrivateKey={setPrivateKey} setSeedPhrase={setSeedPhrase} />
 
                     <div className="flex flex-col gap-[40px] w-full mt-[40px]">
                         {address && (
@@ -144,23 +144,6 @@ export const UserWallet = () => {
                         )}
                         <div className="flex flex-col gap-[12px]">
                             <span className="text-white text-[16px] font-['PP_Mori']">Private key</span>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={privateKey}
-                                    readOnly
-                                    className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px] pr-[48px]"
-                                />
-                                <button
-                                    onClick={() => navigator.clipboard.writeText(privateKey)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                                >
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="white" strokeOpacity="0.5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="white" strokeOpacity="0.5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </button>
-                            </div>
                             <motion.button
                                 onClick={() => handlePrivateKeyConnect(privateKey)}
                                 whileHover={{ scale: 1.02 }}
@@ -173,23 +156,6 @@ export const UserWallet = () => {
 
                         <div className="flex flex-col gap-[12px]">
                             <span className="text-white text-[16px] font-['PP_Mori']">Seed phrase</span>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={seedPhrase}
-                                    readOnly
-                                    className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px] pr-[48px]"
-                                />
-                                <button
-                                    onClick={() => navigator.clipboard.writeText(seedPhrase)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                                >
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="white" strokeOpacity="0.5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="white" strokeOpacity="0.5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </button>
-                            </div>
                             <motion.button
                                 onClick={() => handleSeedPhraseConnect(seedPhrase)}
                                 whileHover={{ scale: 1.02 }}
