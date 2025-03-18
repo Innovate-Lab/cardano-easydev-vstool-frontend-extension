@@ -8,9 +8,11 @@ interface IGenerateWalletProps {
     handleGenerateSeedPhrase: () => void;
     privateKey: string;
     seedPhrase: string;
+    setPrivateKey: (privateKey: string) => void;
+    setSeedPhrase: (seedPhrase: string) => void;
 }
 
-export const GenerateWallet = ({ handleGeneratePrivateKey, handleGenerateSeedPhrase, privateKey, seedPhrase }: IGenerateWalletProps) => {
+export const GenerateWallet = ({ handleGeneratePrivateKey, handleGenerateSeedPhrase, privateKey, seedPhrase, setPrivateKey, setSeedPhrase }: IGenerateWalletProps) => {
     return (
         <div className="flex flex-col gap-[40px] w-full">
             <motion.div
@@ -51,6 +53,7 @@ export const GenerateWallet = ({ handleGeneratePrivateKey, handleGenerateSeedPhr
                             <input
                                 type="text"
                                 value={privateKey}
+                                onChange={(e) => setPrivateKey(e.target.value)}
                                 className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
                             />
                         </div>
@@ -64,6 +67,7 @@ export const GenerateWallet = ({ handleGeneratePrivateKey, handleGenerateSeedPhr
                             <input
                                 type="text"
                                 value={seedPhrase}
+                                onChange={(e) => setSeedPhrase(e.target.value)}
                                 className="w-full h-[48px] bg-[rgba(92,92,92,0.27)] rounded-[12px] border border-[rgba(255,255,255,0.21)] px-[16px] text-white/50 text-[16px]"
                             />
                         </div>
