@@ -1,8 +1,8 @@
 export const Background = ({ children }: { children?: React.ReactNode }) => {
     return (
-        <div className="relative w-full min-h-screen overflow-hidden m-0 p-0 left-0 top-0">
+        <div className="relative w-full min-h-screen overflow-x-hidden m-0 p-0 left-0 top-0">
             <svg
-                className="absolute top-0 left-0 -z-10 w-full h-full block"
+                className="fixed top-0 left-0 -z-10 w-full h-full min-h-screen block"
                 preserveAspectRatio="xMidYMid slice"
                 viewBox="0 0 720 1024"
                 fill="none"
@@ -91,7 +91,7 @@ export const Background = ({ children }: { children?: React.ReactNode }) => {
                     </clipPath>
                 </defs>
             </svg>
-            <div className="m-0 p-0">
+            <div className="relative min-h-screen w-full pb-16">
                 {children}
             </div>
         </div>
