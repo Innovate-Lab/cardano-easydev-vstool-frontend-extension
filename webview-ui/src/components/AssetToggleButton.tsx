@@ -22,15 +22,15 @@ export const AssetToggleButton: React.FC<AssetToggleButtonProps> = ({
     return (
         <div
             onClick={onClick}
-            className={`flex pt-[8px] pr-[16px] pb-[8px] pl-[16px] gap-[5px] items-center shrink-0 flex-nowrap rounded-[12px] relative ${isActive ? 'bg-[#fff]' : ''
+            className={`flex w-full pt-[8px] pr-[16px] pb-[8px] pl-[16px] gap-[5px] items-center rounded-[12px] relative ${isActive ? 'bg-[#fff]' : ''
                 }`}
         >
             <div
                 className="w-[24px] h-[24px] shrink-0 bg-cover bg-no-repeat relative overflow-hidden"
                 style={{ backgroundImage: `url(${ASSET_ICONS[type]})` }}
             />
-            <div className="flex gap-[8px] items-center shrink-0 flex-nowrap relative">
-                <span className={`h-[11px] shrink-0 basis-auto font-['PP_Mori'] text-[16px] font-normal leading-[11px] relative text-left whitespace-nowrap ${isActive ? 'text-[#01323d]' : 'text-[#6c6c6c]'
+            <div className="flex gap-[8px] items-center relative">
+                <span className={`h-[11px] font-['PP_Mori'] text-[16px] font-normal leading-[11px] relative text-left whitespace-nowrap ${isActive ? 'text-[#01323d]' : 'text-[#6c6c6c]'
                     }`}>
                     {ASSET_LABELS[type]}
                 </span>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { usePlutus } from '../../context/PlutusProvider';
 import { resolveAllRefs } from '../../utils/plutusSchema';
-import '../../styles/animations.css';
+import { AssetToggleButton } from '../AssetToggleButton';
 
 interface ContractFieldsProps {
     setData: (data: any) => void;
@@ -66,13 +66,13 @@ const ContractFields = ({ setData }: ContractFieldsProps) => {
         setFieldValues(newFieldValues);
 
         // Use newFieldValues instead of fieldValues to get the latest value immediately
-        // const dataWithValues = datumFields.map(field => ({
-        //     dataType: field.dataType,
-        //     title: field.title,
-        //     value: newFieldValues[field.title] || ''
-        // }));
+        const dataWithValues = datumFields.map(field => ({
+            dataType: field.dataType,
+            title: field.title,
+            value: newFieldValues[field.title] || ''
+        }));
 
-        // setData(dataWithValues);
+        setData(dataWithValues);
     };
 
     const TableSection = ({ title, fields }: { title: string, fields: any[] }) => {
@@ -83,53 +83,40 @@ const ContractFields = ({ setData }: ContractFieldsProps) => {
         }, []);
 
         return (
-            <div className={`mb-6 transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <h3 className="text-lg font-medium text-gray-200 mb-4 relative group inline-block">
+            <div className={`flex flex-col gap-[12px] items-start self-stretch shrink-0 flex-nowrap ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                <span className="h-[15px] shrink-0 basis-auto font-['PP_Mori'] text-[22px] font-semibold leading-[15px] text-[#fff] relative text-left whitespace-nowrap">
                     {title}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 
-                               group-hover:w-full transition-all duration-500 ease-out"></span>
-                </h3>
+                </span>
                 <div className="space-y-4">
                     {fields.length === 0 || fields[0]?.description === "The nullary constructor." ? (
-                        <div className="p-6 rounded-lg bg-gray-800/30 
-                                  border border-gray-700 hover:border-gray-600 
-                                  transition-all duration-300 group">
+                        <div className="p-6 rounded-lg bg-[rgba(92,92,92,0.27)] border border-[rgba(255,255,255,0.21)]">
                             <div className="flex items-center space-x-3">
-                                <div className="w-2 h-2 rounded-full bg-blue-500/50 
-                                          group-hover:bg-blue-400 transition-colors duration-300"></div>
-                                <span className="text-gray-400 group-hover:text-gray-300 
-                                           transition-colors duration-300">
-                                    Type: <span className="text-blue-400 font-medium">void</span>
+                                <div className="w-2 h-2 rounded-full bg-[#00ffb2]"></div>
+                                <span className="text-white">
+                                    Type: <span className="text-[#00ffb2] font-medium">void</span>
                                 </span>
                             </div>
-                            <p className="mt-2 text-sm text-gray-500 pl-5">
+                            <p className="mt-2 text-sm text-gray-400 pl-5">
                                 This {title.toLowerCase()} doesn't require any input parameters
                             </p>
                         </div>
                     ) : (
                         fields.map((field: any, index: number) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-4 p-4 rounded-lg 
-                                     hover:bg-gray-800/50 group
-                                     transform transition-all duration-300 hover:translate-x-2"
-                            >
-                                <div className="w-1/4">
-                                    <div className="text-sm text-gray-400 group-hover:text-blue-400 
-                                              transition-colors duration-300">{field.dataType}</div>
-                                    <div className="text-gray-200 group-hover:text-white 
-                                              transition-colors duration-300">{field.title || '-'}</div>
+                            <div key={index} className="flex h-[34px] gap-[8px] items-center self-stretch shrink-0 flex-nowrap">
+                                <div className="flex w-[69px] flex-col gap-[8px] justify-center items-start shrink-0 flex-nowrap">
+                                    <span className="h-[10px] shrink-0 basis-auto font-['PP_Mori'] text-[14px] font-semibold leading-[10px] text-[#00ffb2]">
+                                        {field.dataType}
+                                    </span>
+                                    <span className="h-[11px] shrink-0 basis-auto font-['PP_Mori'] text-[16px] font-semibold leading-[11px] text-white">
+                                        {field.title || '-'}
+                                    </span>
                                 </div>
-                                <div className="w-3/4">
+                                <div className="flex h-[34px] px-[8px] py-[24px] gap-[10px] items-center grow shrink-0 basis-0 flex-nowrap bg-[rgba(92,92,92,0.27)] rounded-[8px] border-solid border border-[rgba(255,255,255,0.21)]">
                                     <input
                                         type="text"
                                         value={fieldValues[field.title] || ''}
                                         onChange={(e) => handleFieldChange(field, e.target.value)}
-                                        className="w-full bg-gray-800 rounded-md px-4 py-3 text-gray-200
-                                             border border-gray-700 transition-colors duration-300
-                                             focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 
-                                             focus:outline-none hover:border-gray-600
-                                             placeholder-gray-500"
+                                        className="w-full bg-transparent text-[16px] font-normal text-white outline-none"
                                         placeholder={`Enter ${field.dataType} value`}
                                     />
                                 </div>
@@ -143,27 +130,17 @@ const ContractFields = ({ setData }: ContractFieldsProps) => {
 
     return (
         <div className="space-y-8 max-w-3xl p-6">
-            <div className="inline-flex p-1 space-x-2 bg-gray-800/50 rounded-lg border border-gray-700/50 backdrop-blur-sm">
-                <button
+            <div className="flex w-[321px] items-start shrink-0 flex-nowrap bg-[#04242b] rounded-[12px] relative z-[21] gap-2">
+                <AssetToggleButton
+                    type="lock"
+                    isActive={mode === 'lock'}
                     onClick={() => setMode('lock')}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-md font-medium transition-all duration-300 
-                    ${mode === 'lock'
-                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30 translate-y-[-1px]'
-                            : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700/50'
-                        }`}
-                >
-                    <span>Lock Assets</span>
-                </button>
-                <button
+                />
+                <AssetToggleButton
+                    type="unlock"
+                    isActive={mode === 'unlock'}
                     onClick={() => setMode('unlock')}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-md font-medium transition-all duration-300
-                    ${mode === 'unlock'
-                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30 translate-y-[-1px]'
-                            : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700/50'
-                        }`}
-                >
-                    <span>Unlock Assets</span>
-                </button>
+                />
             </div>
 
             {mode === 'lock' ? (
