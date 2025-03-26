@@ -77,6 +77,10 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
       easyDevTerminal.test(payload);
       break;
 
+    case 'VIEW_ON_EXPLORER':
+      vscode.env.openExternal(vscode.Uri.parse(`https://preprod.cardanoscan.io/transaction/${payload}`));
+      break;
+
     case 'CREATE_TEMPLATE':
       const result = await generateFromTemplate(payload);
 

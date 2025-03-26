@@ -12,6 +12,8 @@ import { NFTList } from '../components/NFTList'
 import { NFT } from '../components/NFTCard'
 import { UTXOList } from '../components/UTXOList'
 import { UTXO } from '../components/UTXOCard'
+import { TransactionList } from '../components/TransactionList'
+import { Transaction } from '../types/api/transaction'
 
 export const UserWallet = () => {
     const navigate = useNavigate();
@@ -22,6 +24,7 @@ export const UserWallet = () => {
     const [nfts, setNfts] = useState<Array<NFT>>([]);
     const [utxos, setUtxos] = useState<Array<UTXO>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [transactions, setTransactions] = useState<Array<Transaction>>([]);
 
     const handleGeneratePrivateKey = async () => {
         const resp = await axiosInstance.post<IGeneratePrivateKeyResponse>("/wallet/private-key")
@@ -108,6 +111,29 @@ export const UserWallet = () => {
         setAddress(json.data.address);
     }
 
+    useEffect(() => {
+        let mounted = true;
+
+        const fetchTransactions = async () => {
+            if (!address || !mounted) return;
+
+            try {
+                const response = await axiosInstance.get(`/wallet/transactions?address=${address}`);
+                if (mounted) {
+                    setTransactions(response.data.data.transactions);
+                }
+            } catch (error) {
+                console.error('Failed to fetch transactions:', error);
+            }
+        };
+
+        fetchTransactions();
+
+        return () => {
+            mounted = false;
+        };
+    }, [address]);
+
     return (
         <MainContainer>
             <motion.div
@@ -178,8 +204,11 @@ export const UserWallet = () => {
                                     </span>
                                 </div>
 
-                                {/* UTXO List */}
-                                <UTXOList utxos={utxos} />
+                                {/* Scrollable Container */}
+                                <div className="max-h-[400px] overflow-y-auto pr-2">
+                                    {/* UTXO List */}
+                                    <UTXOList utxos={utxos} />
+                                </div>
                             </div>
 
                             {/* NFT Collection Section */}
@@ -191,14 +220,39 @@ export const UserWallet = () => {
                                     </span>
                                 </div>
 
-                                {/* NFT List */}
-                                {isLoading ? (
-                                    <div className="text-center text-white/50 text-[16px] font-['PP_Mori']">
-                                        Loading NFTs...
-                                    </div>
-                                ) : (
-                                    <NFTList nfts={nfts} />
-                                )}
+                                {/* Scrollable Container */}
+                                <div className="max-h-[400px] overflow-y-auto pr-2">
+                                    {/* NFT List */}
+                                    {isLoading ? (
+                                        <div className="text-center text-white/50 text-[16px] font-['PP_Mori']">
+                                            Loading NFTs...
+                                        </div>
+                                    ) : (
+                                        <NFTList nfts={nfts} />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Transaction Section */}
+                            <div className="flex flex-col gap-6 mt-8 w-full">
+                                {/* Section Header */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-white text-[24px] font-['PP_Mori'] font-semibold">
+                                        Transactions
+                                    </span>
+                                </div>
+
+                                {/* Restore the max-height constraint for scrolling */}
+                                <div className="max-h-[400px] overflow-y-auto w-full pr-2">
+                                    {/* Transaction List */}
+                                    {isLoading ? (
+                                        <div className="text-center text-white/50 text-[16px] font-['PP_Mori']">
+                                            Loading transactions...
+                                        </div>
+                                    ) : (
+                                        <TransactionList transactions={transactions} />
+                                    )}
+                                </div>
                             </div>
                         </>
                     )}
