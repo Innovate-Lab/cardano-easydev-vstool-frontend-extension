@@ -10,6 +10,7 @@ import { usePlutus } from '../context/PlutusProvider'
 import { resolveAllRefs } from '../utils/plutusSchema'
 import { axiosInstance } from '../api/axios'
 import ContractFields from '../components/ContractInterface/ContractFields'
+import { UTXOs } from '../components/UTXO'
 
 export const Simulation = () => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const Simulation = () => {
     const { plutusSchema, setPlutusSchema, setCurrentValidatorIndex, currentValidatorIndex } = usePlutus();
 
     const [contractAddress, setContractAddress] = useState<string>("");
+    const [unitsQuantity, setUnitsQuantity] = useState<{ [key: string]: bigint }>({});
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -38,6 +40,14 @@ export const Simulation = () => {
             reader.readAsText(file);
         }
     };
+
+    const handleExecuteTransaction = async () => {
+        if (!plutusSchema || currentValidatorIndex === null) return;
+        const txHash = await axiosInstance.post("/validator/execute", {
+            datumOrRedeemer: data
+        });
+        console.log(txHash)
+    }
 
     const resolvedValidators = plutusSchema?.validators.map(validator => {
         return {
@@ -132,15 +142,15 @@ export const Simulation = () => {
                         {resolvedValidators?.map((validator, index) => (
                             <>
                                 {currentValidatorIndex === index && (
-                                    <div className="flex flex-col gap-6">
+                                    <div className="flex flex-col gap-[40px] items-start self-stretch shrink-0 flex-nowrap relative z-[3]">
                                         <h3 className="h-[15px] font-['PP_Mori'] text-[22px] font-semibold leading-[15px] text-[#fff]">
                                             {validator.title}
                                         </h3>
                                         <ContractFields setData={setData} />
-                                        {/* <UtXOs
-                                                    unitsQuantity={unitsQuantity}
-                                                    setUnitsQuantity={setUnitsQuantity}
-                                                /> */}
+                                        <UTXOs
+                                            unitsQuantity={unitsQuantity}
+                                            setUnitsQuantity={setUnitsQuantity}
+                                        />
                                         <motion.button
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
@@ -149,7 +159,9 @@ export const Simulation = () => {
                                                 ? 'bg-[#00A19B]/50 cursor-not-allowed'
                                                 : 'bg-[#00A19B] hover:bg-[#00B1AB]'
                                                 }`}
-                                            onClick={() => { }}
+                                            onClick={async () => {
+                                                await handleExecuteTransaction()
+                                            }}
                                         >
                                             {isLoading ? 'Processing...' : 'Execute transaction'}
                                         </motion.button>
@@ -169,28 +181,6 @@ export const Simulation = () => {
                                 )}
                             </>
                         ))}
-                        {/* <div className="flex flex-col gap-[12px] items-start self-stretch shrink-0 flex-nowrap relative z-[47]">
-                            <span className="h-[15px] shrink-0 basis-auto font-['PP_Mori'] text-[22px] font-semibold leading-[15px] text-[#fff] relative text-left whitespace-nowrap z-[48]">
-                                UTxOs Selection
-                            </span>
-                            <div className="flex h-[34px] gap-[8px] items-center self-stretch shrink-0 flex-nowrap relative z-[49]">
-                                <div className="flex w-[122px] flex-col gap-[8px] justify-center items-start shrink-0 flex-nowrap relative z-50">
-                                    <span className="h-[10px] shrink-0 basis-auto font-['PP_Mori'] text-[14px] font-semibold leading-[10px] text-[#00ffb2] relative text-left whitespace-nowrap z-[51]">
-                                        lovelace
-                                    </span>
-                                    <span className="h-[11px] shrink-0 basis-auto font-['PP_Mori'] text-[16px] font-semibold leading-[11px] text-[#fff] relative text-left whitespace-nowrap z-[52]">
-                                        999000000000
-                                    </span>
-                                </div>
-                                <div className="flex w-[53px] h-[34px] pt-[24px] pr-[8px] pb-[24px] pl-[8px] gap-[10px] items-center shrink-0 flex-nowrap bg-[rgba(92,92,92,0.27)] rounded-[8px] border-solid border border-[rgba(255,255,255,0.21)] relative z-[53]">
-                                    <span className="h-[11px] shrink-0 basis-auto font-['PP_Mori'] text-[16px] font-normal leading-[11px] text-[#fff] relative text-left overflow-hidden whitespace-nowrap z-[54]">
-                                        1000
-                                    </span>
-                                </div>
-                                <div className="w-[24px] h-[24px] shrink-0 bg-[url(https://static.codia.ai/image/2025-03-12/dd70fdd9-1dc0-40d6-93a5-6f31fe7259f8.svg)] bg-cover bg-no-repeat relative overflow-hidden z-[55]" />
-                            </div>
-                        </div> */}
-
                     </div>
                 </GlassCard>
             </motion.div>
