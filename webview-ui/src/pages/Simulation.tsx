@@ -11,17 +11,21 @@ import { resolveAllRefs } from '../utils/plutusSchema'
 import { axiosInstance } from '../api/axios'
 import ContractFields from '../components/ContractInterface/ContractFields'
 import { UTXOs } from '../components/UTXO'
+import { useWallet } from '../context/WalletProvider'
 
 export const Simulation = () => {
     const navigate = useNavigate();
 
     const { plutusSchema, setPlutusSchema, setCurrentValidatorIndex, currentValidatorIndex } = usePlutus();
 
+    const { seedPhrase, privateKey } = useWallet();
+
     const [contractAddress, setContractAddress] = useState<string>("");
     const [unitsQuantity, setUnitsQuantity] = useState<{ [key: string]: bigint }>({});
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [txHash, setTxHash] = useState<string | null>(null);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -43,10 +47,26 @@ export const Simulation = () => {
 
     const handleExecuteTransaction = async () => {
         if (!plutusSchema || currentValidatorIndex === null) return;
-        const txHash = await axiosInstance.post("/validator/execute", {
-            datumOrRedeemer: data
-        });
-        console.log(txHash)
+        try {
+            setIsLoading(true);
+            // Convert BigInt values to strings for serialization
+            const serializedUnitsQuantity = Object.entries(unitsQuantity).reduce((acc, [key, value]) => {
+                acc[key] = value.toString();
+                return acc;
+            }, {} as Record<string, string>);
+
+            const resp = await axiosInstance.post("/validator/execute", {
+                datumOrRedeemer: data,
+                contractAddress: contractAddress,
+                unitsQuantity: serializedUnitsQuantity,
+                seedPhrase: seedPhrase,
+            });
+            setTxHash(resp.data.data.txHash);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'Failed to execute transaction');
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     const resolvedValidators = plutusSchema?.validators.map(validator => {
@@ -160,23 +180,49 @@ export const Simulation = () => {
                                                 : 'bg-[#00A19B] hover:bg-[#00B1AB]'
                                                 }`}
                                             onClick={async () => {
-                                                await handleExecuteTransaction()
+                                                await handleExecuteTransaction();
                                             }}
                                         >
                                             {isLoading ? 'Processing...' : 'Execute transaction'}
                                         </motion.button>
-                                        {/* {txHash && (
-                                                    <div className="mt-4">
-                                                        <a
-                                                            href={`https://preprod.cardanoscan.io/transaction/${txHash}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-[#00ffb2] hover:text-[#00ffb2]/80 underline"
-                                                        >
-                                                            View transaction on Explorer
-                                                        </a>
+                                        {txHash && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="w-full p-4 bg-[rgba(0,255,178,0.1)] rounded-lg border border-[#00ffb2]/20 mt-4"
+                                            >
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-white/70 text-sm">Transaction Hash:</span>
+                                                        <CopyButton text={txHash} />
                                                     </div>
-                                                )} */}
+                                                    <div className="font-mono text-sm text-white/90 break-all">
+                                                        {txHash}
+                                                    </div>
+                                                    <a
+                                                        href={`https://preprod.cardanoscan.io/transaction/${txHash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-2 text-[#00ffb2] hover:text-[#00ffb2]/80 transition-colors mt-2"
+                                                    >
+                                                        <span>View on Explorer</span>
+                                                        <svg
+                                                            className="w-4 h-4"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                                            />
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </motion.div>
+                                        )}
                                     </div>
                                 )}
                             </>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { UTxO, Assets } from 'lucid-cardano';
 import { axiosInstance } from '../api/axios';
+import { useWallet } from '../context/WalletProvider';
 
 interface UTXOsProps {
     unitsQuantity: { [key: string]: bigint };
@@ -9,6 +10,7 @@ interface UTXOsProps {
 
 export const UTXOs: React.FC<UTXOsProps> = ({ unitsQuantity, setUnitsQuantity }) => {
     const [utxos, setUtxos] = useState<UTxO[]>([]);
+    const { address } = useWallet();
 
     const [selectedAssets, setSelectedAssets] = useState<{ [key: string]: boolean }>({});
 
@@ -37,7 +39,6 @@ export const UTXOs: React.FC<UTXOsProps> = ({ unitsQuantity, setUnitsQuantity })
 
     useEffect(() => {
         async function fetchUtxos() {
-            const address = "addr_test1qr7xvrx6zea988hz5juazw32qyfmh5jg6z9euursqs390pz62landnfc3ggslmdvaglwmuquuxt2pkkxctzp0adfrxasyzm9m9";
             const data = await axiosInstance.get<{ data: { utxos: UTxO[] } }>(`/wallet/utxos-lucid?address=${address}`);
             console.log(data.data.data.utxos);
             // Convert amounts from number to bigint in UTXOs
