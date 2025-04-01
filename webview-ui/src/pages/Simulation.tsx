@@ -21,6 +21,7 @@ export const Simulation = () => {
     const { seedPhrase, privateKey } = useWallet();
 
     const [contractAddress, setContractAddress] = useState<string>("");
+    const [isLockMode, setIsLockMode] = useState<boolean>(true);
     const [unitsQuantity, setUnitsQuantity] = useState<{ [key: string]: bigint }>({});
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +61,11 @@ export const Simulation = () => {
                 contractAddress: contractAddress,
                 unitsQuantity: serializedUnitsQuantity,
                 seedPhrase: seedPhrase,
+                isLock: isLockMode,
+                validator: {
+                    type: "PlutusV2",
+                    script: plutusSchema?.validators[currentValidatorIndex as number].compiledCode,
+                }
             });
             setTxHash(resp.data.data.txHash);
         } catch (error) {
@@ -166,7 +172,7 @@ export const Simulation = () => {
                                         <h3 className="h-[15px] font-['PP_Mori'] text-[22px] font-semibold leading-[15px] text-[#fff]">
                                             {validator.title}
                                         </h3>
-                                        <ContractFields setData={setData} />
+                                        <ContractFields setData={setData} isLockMode={isLockMode} setIsLockMode={setIsLockMode} />
                                         <UTXOs
                                             unitsQuantity={unitsQuantity}
                                             setUnitsQuantity={setUnitsQuantity}

@@ -5,11 +5,12 @@ import { AssetToggleButton } from '../AssetToggleButton';
 
 interface ContractFieldsProps {
     setData: (data: any) => void;
+    isLockMode: boolean;
+    setIsLockMode: (isLockMode: boolean) => void;
 }
 
-const ContractFields = ({ setData }: ContractFieldsProps) => {
+const ContractFields = ({ setData, isLockMode, setIsLockMode }: ContractFieldsProps) => {
     const { plutusSchema, currentValidatorIndex } = usePlutus();
-    const [mode, setMode] = useState<'lock' | 'unlock'>('lock');
     const [fieldValues, setFieldValues] = useState<{ [key: string]: string }>({});
 
     if (currentValidatorIndex === null) {
@@ -65,14 +66,22 @@ const ContractFields = ({ setData }: ContractFieldsProps) => {
         // Update state
         setFieldValues(newFieldValues);
 
-        // Use newFieldValues instead of fieldValues to get the latest value immediately
-        const dataWithValues = datumFields.map(field => ({
-            dataType: field.dataType,
-            title: field.title,
-            value: newFieldValues[field.title] || ''
-        }));
-
-        setData(dataWithValues);
+        if (isLockMode) {
+            // Use newFieldValues instead of fieldValues to get the latest value immediately
+            const datumWithValues = datumFields.map(field => ({
+                dataType: field.dataType,
+                title: field.title,
+                value: newFieldValues[field.title] || ''
+            }));
+            setData(datumWithValues);
+        } else {
+            const redeemerWithValues = redeemerFields.map(field => ({
+                dataType: field.dataType,
+                title: field.title,
+                value: newFieldValues[field.title] || ''
+            }));
+            setData(redeemerWithValues);
+        }
     };
 
     const TableSection = ({ title, fields }: { title: string, fields: any[] }) => {
@@ -133,17 +142,17 @@ const ContractFields = ({ setData }: ContractFieldsProps) => {
             <div className="flex w-[321px] items-start shrink-0 flex-nowrap bg-[#04242b] rounded-[12px] relative z-[21] gap-2">
                 <AssetToggleButton
                     type="lock"
-                    isActive={mode === 'lock'}
-                    onClick={() => setMode('lock')}
+                    isActive={isLockMode}
+                    onClick={() => setIsLockMode(true)}
                 />
                 <AssetToggleButton
                     type="unlock"
-                    isActive={mode === 'unlock'}
-                    onClick={() => setMode('unlock')}
+                    isActive={!isLockMode}
+                    onClick={() => setIsLockMode(false)}
                 />
             </div>
 
-            {mode === 'lock' ? (
+            {isLockMode ? (
                 <TableSection title="Datum" fields={datumFields} />
             ) : (
                 <TableSection title="Redeemer" fields={redeemerFields} />
