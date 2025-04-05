@@ -20,11 +20,23 @@ webview-ui/README.md
 webview-ui/package.json
 webview-ui/package-lock.json
 webview-ui/node_modules/**
+webview-ui/.env
+webview-ui/.env.example
+webview-ui/postcss.config.js
+webview-ui/tailwind.config.js
+
+# Ignore CI/CD and version control
+.github/**
+**/.gitignore
+
+# Ignore lock files and package managers
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
 
 # Ignore Misc
 .yarnrc
 vsc-extension-quickstart.md
-**/.gitignore
 **/tsconfig.json
 **/vite.config.ts
 **/.eslintrc.json

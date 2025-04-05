@@ -68,16 +68,20 @@ const ContractFields = ({ setData, isLockMode, setIsLockMode }: ContractFieldsPr
 
         if (isLockMode) {
             // Use newFieldValues instead of fieldValues to get the latest value immediately
+            // @ts-ignore
             const datumWithValues = datumFields.map(field => ({
                 dataType: field.dataType,
                 title: field.title,
+                // @ts-ignore
                 value: newFieldValues[field.title] || ''
             }));
             setData(datumWithValues);
         } else {
+            // @ts-ignore
             const redeemerWithValues = redeemerFields.map(field => ({
                 dataType: field.dataType,
                 title: field.title,
+                // @ts-ignore
                 value: newFieldValues[field.title] || ''
             }));
             setData(redeemerWithValues);

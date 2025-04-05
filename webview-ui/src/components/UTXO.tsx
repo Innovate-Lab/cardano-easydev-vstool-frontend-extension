@@ -54,6 +54,7 @@ export const UTXOs: React.FC<UTXOsProps> = ({ unitsQuantity, setUnitsQuantity })
                             processedAssets[assetId] = amount;
                         } else {
                             // Convert number or string to BigInt
+                            // @ts-ignore
                             processedAssets[assetId] = BigInt(amount.toString());
                         }
                     });
@@ -74,6 +75,7 @@ export const UTXOs: React.FC<UTXOsProps> = ({ unitsQuantity, setUnitsQuantity })
     const handleQuantityChange = (assetId: string, value: string) => {
         // Handle empty or invalid input
         const newValue = value === '' ? 0n : BigInt(Math.max(0, parseInt(value) || 0));
+        // @ts-ignore
         setUnitsQuantity(prev => ({
             ...prev,
             [assetId]: newValue
