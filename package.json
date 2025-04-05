@@ -1,11 +1,11 @@
 {
   "name": "cardano-easydev-vstool",
-  "displayName": "EasyDev",
+  "displayName": "Cardano EasyDev VsTool",
   "icon": "media/icon.png",
-  "publisher": "",
+  "publisher": "inno-labs",
   "description": "",
-  "version": "0.0.1",
-  "repository": "",
+  "version": "0.0.3",
+  "repository": "https://github.com/Innovate-Lab/cardano-easydev-vstool-frontend-extension",
   "engines": {
     "vscode": "^1.87.0"
   },
