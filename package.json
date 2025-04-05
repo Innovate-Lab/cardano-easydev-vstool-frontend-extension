@@ -4,7 +4,7 @@
   "icon": "media/icon.png",
   "publisher": "inno-labs",
   "description": "",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": "https://github.com/Innovate-Lab/cardano-easydev-vstool-frontend-extension",
   "engines": {
     "vscode": "^1.87.0"
